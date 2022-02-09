@@ -18,8 +18,6 @@ class ReservationRepositoryTest {
 
     @Autowired
     ReservationRepository reservationRepository;
-    @Autowired
-    EntityManager entityManager;
 
     @Test
     void save() {
@@ -35,7 +33,6 @@ class ReservationRepositoryTest {
     void countByCreateDate() {
         // given
         reservationRepository.saveAndFlush(Reservation.getFakeInstance("fake1"));
-        entityManager.clear();
 
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);

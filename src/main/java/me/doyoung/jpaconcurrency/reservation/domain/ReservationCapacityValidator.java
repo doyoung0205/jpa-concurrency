@@ -27,7 +27,7 @@ public class ReservationCapacityValidator implements ReservationValidator {
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
 
         final int count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
-        if (count <= MAX_CAPACITY_COUNT) {
+        if (count >= MAX_CAPACITY_COUNT) {
             throw new IllegalStateException(RESERVATION_ERROR_MESSAGE);
         }
     }
