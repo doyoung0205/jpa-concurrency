@@ -40,22 +40,25 @@ class ReservationServiceConcurrencyTest {
         // given
         reservationRepository.save(Reservation.getFakeInstance("fake2"));
 
+        // when
         CountDownLatch latch = new CountDownLatch(N_THREADS);
-        for (int i = 0; i < N_THREADS; i++) {
-            int finalI = i;
+        for (int index = 0; index < N_THREADS; index++) {
+            final int finalIndex = index;
             executorService.execute(() -> {
-                service.reserve(new ReservationDtos.Request("request" + finalI));
+                service.reserve(new ReservationDtos.Request("request" + finalIndex));
                 latch.countDown();
             });
         }
         latch.await();
 
+        // then
+        assertEquals(getReservationCountByToday(), 2);
+    }
+
+
+    private int getReservationCountByToday() {
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-
-        // when
-        final int count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
-        // then
-        assertEquals(count, 2);
+        return reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
     }
 }

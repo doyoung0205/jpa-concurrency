@@ -22,13 +22,15 @@ public class ReservationCapacityValidator implements ReservationValidator {
 
     @Override
     public void validate(Reservation reservation) {
-
-        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
-        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-
-        final int count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
+        final int count = getReservationCountByToday();
         if (count >= MAX_CAPACITY_COUNT) {
             throw new IllegalStateException(RESERVATION_ERROR_MESSAGE);
         }
+    }
+
+    private int getReservationCountByToday() {
+        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
+        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
+        return reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
     }
 }
