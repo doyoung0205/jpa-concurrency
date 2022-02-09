@@ -24,7 +24,6 @@ class ReservationServiceTest {
     @Autowired
     ReservationRepository reservationRepository;
 
-
     @DisplayName("예약이 성공하는 케이스")
     @Test
     @Transactional
