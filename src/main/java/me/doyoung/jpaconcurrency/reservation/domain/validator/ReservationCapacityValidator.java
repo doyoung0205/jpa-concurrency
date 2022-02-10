@@ -28,18 +28,16 @@ public class ReservationCapacityValidator implements ReservationValidator {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public void validate(Reservation reservation) {
-        log.info("validate() 예약정보 = {}", reservation);
-
-        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
-        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-        final int count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
-        log.info("[validate] 현재 예약자 수 :: {}", count);
-
+        final int count = getReservationCountToday();
+        log.info("[validate] 예약자정보 = {}, 현재 예약자 수 = {}", reservation, count);
         if (count >= MAX_CAPACITY_COUNT) {
             throw new IllegalStateException(RESERVATION_ERROR_MESSAGE);
         }
     }
 
-
-
+    private int getReservationCountToday() {
+        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
+        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
+        return reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
+    }
 }
