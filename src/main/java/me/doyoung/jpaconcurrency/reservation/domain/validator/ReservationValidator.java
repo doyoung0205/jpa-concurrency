@@ -1,4 +1,4 @@
-package me.doyoung.jpaconcurrency.reservation.domain;
+package me.doyoung.jpaconcurrency.reservation.domain.validator;
 
 import me.doyoung.jpaconcurrency.reservation.domain.Reservation;
 

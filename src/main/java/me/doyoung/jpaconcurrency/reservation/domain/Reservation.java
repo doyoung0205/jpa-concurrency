@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.doyoung.jpaconcurrency.reservation.domain.validator.ReservationValidator;
 import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,6 +17,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 import java.time.LocalDateTime;
 
 @EntityListeners(AuditingEntityListener.class)
@@ -40,6 +42,9 @@ public class Reservation {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Version
+    private Integer version;
+
     private Reservation(String name) {
         validateName(name);
         this.name = name;
@@ -59,5 +64,12 @@ public class Reservation {
 
     public static Reservation getFakeInstance(String name) {
         return new Reservation(name);
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

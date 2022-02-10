@@ -1,5 +1,6 @@
 package me.doyoung.jpaconcurrency.reservation.domain;
 
+import me.doyoung.jpaconcurrency.reservation.domain.validator.ReservationCapacityValidator;
 import me.doyoung.jpaconcurrency.reservation.infra.ReservationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
