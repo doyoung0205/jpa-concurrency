@@ -24,10 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ReservationServiceConcurrencyTest {
 
-    private static final int N_THREAD_COUNT = 5;
-
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(N_THREAD_COUNT);
-
     @Autowired
     ReservationService service;
 
@@ -48,6 +44,9 @@ class ReservationServiceConcurrencyTest {
     @Test
     void reserveConcurrency() throws InterruptedException {
         // given
+        final int N_THREAD_COUNT = 5;
+        final ExecutorService executorService = Executors.newFixedThreadPool(N_THREAD_COUNT);
+
         // when
         CountDownLatch latch = new CountDownLatch(N_THREAD_COUNT);
         for (int index = 0; index < N_THREAD_COUNT; index++) {
@@ -59,7 +58,7 @@ class ReservationServiceConcurrencyTest {
                 } catch (Exception e) {
                     log.info("[ERROR] {}", e.getMessage());
                 }
-                log.info("[AFTER] reserve"); // 1번만 찍힘.
+                log.info("[AFTER] reserve");
                 latch.countDown();
             });
 
