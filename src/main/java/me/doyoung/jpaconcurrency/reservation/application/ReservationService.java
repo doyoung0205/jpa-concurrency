@@ -26,7 +26,7 @@ public class ReservationService {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public synchronized ReservationDtos.Response reserve(ReservationDtos.Request request) {
-        final Reservation reservation = Reservation.from(request, validator);
+        final Reservation reservation = Reservation.from(request.getName(), validator);
         final Reservation savedReservation = repository.save(reservation);
         return new ReservationDtos.Response(savedReservation);
     }

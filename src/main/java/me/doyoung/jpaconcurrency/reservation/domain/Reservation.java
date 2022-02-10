@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.doyoung.jpaconcurrency.reservation.domain.validator.ReservationValidator;
-import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -56,8 +55,8 @@ public class Reservation {
         }
     }
 
-    public static Reservation from(ReservationDtos.Request request, ReservationValidator validator) {
-        final Reservation reservation = new Reservation(request.getName());
+    public static Reservation from(String name, ReservationValidator validator) {
+        final Reservation reservation = new Reservation(name);
         validator.validate(reservation);
         return reservation;
     }
