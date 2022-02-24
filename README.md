@@ -2,6 +2,7 @@
 
 ### 요구사항
 - [x] 하루에 최대 두명까지 예약을 할 수 있음 !
+- [ ] 여러개의 WAS 서버에서도 위의 요구사항을 만족할 수 있는가?
 
 ### 참고 코드 
 `ReservationServiceConcurrencyTest.java`
