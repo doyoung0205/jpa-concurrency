@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import me.doyoung.jpaconcurrency.reservation.domain.Reservation;
 import me.doyoung.jpaconcurrency.reservation.infra.ReservationRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -26,18 +25,25 @@ public class ReservationCapacityValidator implements ReservationValidator {
     private final ReservationRepository reservationRepository;
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(readOnly = true)
     public void validate(Reservation reservation) {
-        final int count = getReservationCountToday();
+        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
+        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
+        final int count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
+
         log.info("[validate] 예약자정보 = {}, 현재 예약자 수 = {}", reservation, count);
-        if (count >= MAX_CAPACITY_COUNT) {
+        if (isSameOrBiggerThenMaxCapacity(count)) {
             throw new IllegalStateException(RESERVATION_ERROR_MESSAGE);
         }
     }
 
-    private int getReservationCountToday() {
-        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
-        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-        return reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
+    private boolean isSameOrBiggerThenMaxCapacity(int count) {
+        return count >= MAX_CAPACITY_COUNT;
     }
+
+//    private int getReservationCountToday() {
+//        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
+//        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
+//        return reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
+//    }
 }
