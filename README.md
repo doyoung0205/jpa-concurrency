@@ -4,6 +4,10 @@
 - [x] 하루에 최대 두명까지 예약을 할 수 있음 !
 - [ ] 여러개의 WAS 서버에서도 위의 요구사항을 만족할 수 있는가?
 
+### 해결하기 위해 찾아볼것
+dirty read, phantom read, jpa lock
+
+
 ### 참고 코드 
 `ReservationServiceConcurrencyTest.java`
 
