@@ -17,6 +17,8 @@ dirty read, phantom read, jpa lock
 
 * https://hyojabal.tistory.com/m/3
 
+
+### 느낀점
 DATABASE LOCK 이랑 관련있을 줄 알았는데,
 <br>
 자바환경에서 여러스레드를 줄세울 수 있는 동기화로 해결했음.  
