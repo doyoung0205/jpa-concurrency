@@ -58,6 +58,22 @@ public class entity { ... }
 OptimisticLockType.DIRTY는 현재 실행 중인 지속성 컨텍스트에서 엔터티가 로드된 이후 변경된 엔터티 속성만 고려한다는 점에서 OptimisticLockType.ALL과 다릅니다.
 ```
 
+
+##### 낙관적 락에서 발생하는 예외
+- `javax.persistence.OptimisticLockException` (jpa 예외)
+- `org.hibernate.StaleObjectStateException` (하이버네이트 예외)
+- `org.springframework.orm.ObjectOptimisticLockingFailureException` (스프링 예외 추상화)
+
+
+##### OPTIMISTIC
+
+
+
+```
+em.find(Board.class, id, LockModeType.OPTIMISTIC); 
+```
+
+
 #### Pessimistic (비관적)
 
 - 현재 트랜잭션에서 변경하고자 하는 레코드에 대해 잠금을 획득하고 변경 작업을 처리하는 방식
@@ -87,9 +103,13 @@ entityManager.find(
 
 ```
 
+#### 명시적 잠금
+
+#### 묵시적 잠금
+
 - Open session in view
 
-### 텍스트 코드
+### 동시성 테스트 코드
 
 `ReservationServiceConcurrencyTest.java`
 
@@ -97,4 +117,5 @@ entityManager.find(
 
 * RealMysql5.7
 * https://docs.jboss.org/hibernate/orm/5.6/userguide/html_single/Hibernate_User_Guide.html#locking
+* 자바 ORM 표준 JPA 프로그래밍
 
