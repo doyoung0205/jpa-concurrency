@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 예약 등록시 최대 인원을 체크하는 유효성 검사
@@ -29,8 +30,8 @@ public class ReservationCapacityValidator implements ReservationValidator {
     public void validate(Reservation reservation) {
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-        final int count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
-
+        final List<Reservation> reservations = reservationRepository.findByCreatedAtBetweenStartAndEndDateTimeWithLock(startDateTime, endDateTime);
+        int count = reservations.size();
         log.info("[validate] 예약자정보 = {}, 현재 예약자 수 = {}", reservation, count);
         if (isSameOrBiggerThenMaxCapacity(count)) {
             throw new IllegalStateException(RESERVATION_ERROR_MESSAGE);
@@ -41,9 +42,4 @@ public class ReservationCapacityValidator implements ReservationValidator {
         return count >= MAX_CAPACITY_COUNT;
     }
 
-//    private int getReservationCountToday() {
-//        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
-//        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-//        return reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
-//    }
 }

@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,6 +19,9 @@ class ReservationRepositoryTest {
 
     @Autowired
     ReservationRepository reservationRepository;
+
+    @Autowired
+    EntityManager em;
 
     @Test
     void save() {
@@ -42,6 +46,28 @@ class ReservationRepositoryTest {
 
         // then
         assertEquals(1, count);
+
+    }
+
+    @Test
+    void findByCreatedAtBetweenStartAndEndDateTimeWithLock() {
+        // given
+        reservationRepository.saveAndFlush(Reservation.getFakeInstance("fake1"));
+
+        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
+        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
+
+        // when
+        final List<Reservation> reservations = reservationRepository.findByCreatedAtBetweenStartAndEndDateTimeWithLock(startDateTime, endDateTime);
+
+        // then
+        assertEquals(1, reservations.size());
+    }
+
+
+    @Test
+    void lock() {
+
 
     }
 }

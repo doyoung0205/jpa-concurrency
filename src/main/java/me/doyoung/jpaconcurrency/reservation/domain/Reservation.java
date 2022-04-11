@@ -1,10 +1,10 @@
 package me.doyoung.jpaconcurrency.reservation.domain;
 
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.doyoung.jpaconcurrency.reservation.domain.validator.ReservationValidator;
+import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,12 +18,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = "id")
 public class Reservation {
 
     private static final String EMPTY_NAME_ERROR_MESSAGE = "예약자의 이름을 입력해주세요.";
@@ -67,8 +67,19 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return "Reservation{" +
-                "name='" + name + '\'' +
-                '}';
+        return "Reservation[" + name + ']';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Reservation that = (Reservation) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
