@@ -4,6 +4,7 @@ package me.doyoung.jpaconcurrency.reservation.domain.validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.doyoung.jpaconcurrency.reservation.domain.Reservation;
+import me.doyoung.jpaconcurrency.reservation.domain.ReservationCapacityException;
 import me.doyoung.jpaconcurrency.reservation.infra.ReservationRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public class ReservationCapacityValidator implements ReservationValidator {
     private final ReservationRepository reservationRepository;
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public void validate(Reservation reservation) {
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
@@ -34,7 +35,7 @@ public class ReservationCapacityValidator implements ReservationValidator {
         int count = reservations.size();
         log.info("[validate] 예약자정보 = {}, 현재 예약자 수 = {}", reservation, count);
         if (isSameOrBiggerThenMaxCapacity(count)) {
-            throw new IllegalStateException(RESERVATION_ERROR_MESSAGE);
+            throw new ReservationCapacityException(RESERVATION_ERROR_MESSAGE);
         }
     }
 
