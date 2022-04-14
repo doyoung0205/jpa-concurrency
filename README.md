@@ -16,6 +16,7 @@
 #### Locking 이란
 
 - Locking: RDB 에서 잠금은 데이터를 읽는 시간과 사용하는 시간 사이에 데이터가 변경되는 것을 방지하기 위해 취하는 조치.
+- LOCK 을 사용할 경우 transaction 이 꼭 필요.
 
 #### Optimistic (낙관적)
 
@@ -96,10 +97,17 @@ em.find(Board.class, id, LockModeType.OPTIMISTIC);
 
 ```
 
+// hibernate
 entityManager.find(
 	Person.class, id, LockModeType.PESSIMISTIC_WRITE,
 	Collections.singletonMap( "javax.persistence.lock.timeout", 200 )
 );
+
+
+// jpa
+@Lock(value = LockModeType.PESSIMISTIC_WRITE)
+@QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "5000")})
+@Query(value = "select r from Reservation r where r.createdAt >= :startDateTime and r.createdAt < :endDateTime")
 
 ```
 
