@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -63,6 +64,10 @@ public class Reservation {
 
     public static Reservation getFakeInstance(String name) {
         return new Reservation(name);
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 
     @Override

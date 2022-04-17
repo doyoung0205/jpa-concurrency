@@ -3,12 +3,19 @@ package me.doyoung.jpaconcurrency.reservation.ui;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.doyoung.jpaconcurrency.reservation.application.ReservationService;
+import me.doyoung.jpaconcurrency.reservation.domain.ReservationCapacityException;
 import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
+import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static me.doyoung.jpaconcurrency.reservation.domain.validator.ReservationCapacityValidator.RESERVATION_ERROR_MESSAGE;
 
 @Slf4j
 @RestController
@@ -22,8 +29,19 @@ public class ReservationController {
     public ResponseEntity<ReservationDtos.Response> reserve(
             @RequestBody ReservationDtos.Request request) {
         log.info("{} 예약 신청 controller 시작", Thread.currentThread().getName());
-        final ResponseEntity<ReservationDtos.Response> result = ResponseEntity.ok().body(service.reserve(request));
-        log.info("{} 예약 신청 controller 종료", Thread.currentThread().getName());
-        return result;
+        try {
+            final ReservationDtos.Response reserve = service.reserve(request);
+            final ResponseEntity<ReservationDtos.Response> result = ResponseEntity.ok().body(reserve);
+            log.info("{} 예약 신청 controller 정상 종료", Thread.currentThread().getName());
+            return result;
+        } catch (ConcurrencyFailureException exception) {
+            log.info("{} 예약 신청 OptimisticLockingFailure 오류 발생", Thread.currentThread().getName());
+            throw new ReservationCapacityException(RESERVATION_ERROR_MESSAGE);
+        }
+    }
+
+    @ExceptionHandler(value = {ReservationCapacityException.class})
+    public String reservationCapacityExceptionHandler(ReservationCapacityException exception) {
+        return exception.getMessage();
     }
 }

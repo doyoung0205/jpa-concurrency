@@ -56,7 +56,7 @@ class ReservationServiceConcurrencyTest {
                 try {
                     service.reserve(new ReservationDtos.Request("신규예약자" + finalIndex));
                 } catch (Exception e) {
-                    log.info("[ERROR] {}", e.getMessage());
+                    log.info("[ERROR] {} {}", e.getClass(), e.getMessage());
                 }
                 log.info("[AFTER] reserve");
                 latch.countDown();

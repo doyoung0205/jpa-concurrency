@@ -36,17 +36,26 @@ class ReservationRepositoryTest {
     @Test
     void countByCreateDate() {
         // given
-        reservationRepository.saveAndFlush(Reservation.getFakeInstance("fake1"));
+        final Reservation fake2 = Reservation.getFakeInstance("fake2");
+        final Reservation fake1 = Reservation.getFakeInstance("fake1");
+
+        reservationRepository.saveAndFlush(fake1);
 
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
 
         // when
-        final int count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
+        int count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
 
         // then
         assertEquals(1, count);
 
+
+        reservationRepository.saveAndFlush(fake2);
+
+        count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
+
+        assertEquals(2, count);
     }
 
     @Test
