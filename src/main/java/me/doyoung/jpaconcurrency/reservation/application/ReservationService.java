@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -18,7 +20,6 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
-
     private final ReservationRepository repository;
     private final ReservationValidator validator;
 
@@ -35,6 +36,7 @@ public class ReservationService {
         return new ReservationDtos.Response(savedReservation);
     }
 
+    @Transactional(readOnly = true)
     public int reserveCountToday() {
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);

@@ -4,8 +4,10 @@ import me.doyoung.jpaconcurrency.reservation.domain.Reservation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -73,9 +75,4 @@ class ReservationRepositoryTest {
     }
 
 
-    @Test
-    void lock() {
-
-
-    }
 }

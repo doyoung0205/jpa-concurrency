@@ -26,14 +26,15 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationDtos.Response> reserve(@RequestBody ReservationDtos.Request request) {
-        log.info("{} 예약 신청 controller 시작", Thread.currentThread().getName());
+        final String threadName = Thread.currentThread().getName();
+        log.info("{} 예약 신청 controller 시작", threadName);
         try {
             final ReservationDtos.Response reserve = service.reserve(request);
             final ResponseEntity<ReservationDtos.Response> result = ResponseEntity.ok().body(reserve);
-            log.info("{} 예약 신청 controller 정상 종료", Thread.currentThread().getName());
+            log.info("{} 예약 신청 controller 정상 종료", threadName);
             return result;
         } catch (ConcurrencyFailureException exception) {
-            log.info("{} 예약 신청 OptimisticLockingFailure 오류 발생", Thread.currentThread().getName());
+            log.info("{} 예약 신청 OptimisticLockingFailure 오류 발생", threadName);
             throw new ReservationCapacityException(RESERVATION_ERROR_MESSAGE);
         }
     }

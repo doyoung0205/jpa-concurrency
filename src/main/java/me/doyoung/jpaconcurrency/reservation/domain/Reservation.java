@@ -86,4 +86,5 @@ public class Reservation {
     public int hashCode() {
         return getClass().hashCode();
     }
+
 }

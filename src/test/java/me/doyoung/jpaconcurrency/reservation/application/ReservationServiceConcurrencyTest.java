@@ -30,17 +30,12 @@ class ReservationServiceConcurrencyTest {
     @Autowired
     ReservationRepository reservationRepository;
 
-    @BeforeEach
-    public void init() {
-        reservationRepository.saveAndFlush(Reservation.getFakeInstance("기존예약자"));
-    }
-
     @AfterEach
     public void afterEach() {
         reservationRepository.deleteAllInBatch();
     }
 
-    @DisplayName("남은 자리가 한자리 일때, 2명 이상이 거의 동시에 예약을 할 때 한명만 예약된다.")
+    @DisplayName("여러명이 동시에 예약을 할 때 최대 인원 수 만큼만 예약이 된다.")
     @Test
     void reserveConcurrency() throws InterruptedException {
         // given

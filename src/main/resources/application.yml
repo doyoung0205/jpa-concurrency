@@ -10,6 +10,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create
+#    open-in-view: false
 
 
 logging:
@@ -20,4 +21,6 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+
+
 

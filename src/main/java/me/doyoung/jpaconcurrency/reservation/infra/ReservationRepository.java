@@ -16,12 +16,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     int countByCreatedAtBetweenStartAndEndDateTime(@Param("startDateTime") LocalDateTime startDateTime,
                                                    @Param("endDateTime") LocalDateTime endDateTime);
 
-
     @Lock(value = LockModeType.OPTIMISTIC_FORCE_INCREMENT)
     @Query(value = "select r from Reservation r where r.createdAt >= :startDateTime and r.createdAt < :endDateTime")
     List<Reservation> findByCreatedAtBetweenStartAndEndDateTimeWithLock(@Param("startDateTime") LocalDateTime startDateTime,
                                                                         @Param("endDateTime") LocalDateTime endDateTime);
 
-    @Lock(value = LockModeType.OPTIMISTIC)
-    <S extends Reservation> S save(S entity);
 }

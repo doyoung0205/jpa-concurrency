@@ -3,6 +3,8 @@ package me.doyoung.jpaconcurrency.reservation.dto;
 import lombok.Getter;
 import me.doyoung.jpaconcurrency.reservation.domain.Reservation;
 
+import java.io.Serializable;
+
 public class ReservationDtos {
 
     // 예약 요청 DTO
@@ -24,8 +26,18 @@ public class ReservationDtos {
     public static class Response {
         private Long id;
 
+        public Response() {
+        }
+
         public Response(Reservation reservation) {
             this.id = reservation.getId();
+        }
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
         }
     }
 }
