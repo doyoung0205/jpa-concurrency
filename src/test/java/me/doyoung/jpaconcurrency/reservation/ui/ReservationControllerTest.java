@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import me.doyoung.jpaconcurrency.AcceptanceTest;
-import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -25,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ReservationControllerTest extends AcceptanceTest {
 
     public static final String RESERVE_URL = "/reserve";
+    public static final String RESERVE_COUNT_URL = RESERVE_URL + "/count";
 
     @Test
     @DisplayName("여러명이 동시에 예약한다.")
@@ -46,6 +46,10 @@ class ReservationControllerTest extends AcceptanceTest {
         }
         latch.await(10, TimeUnit.SECONDS);
 
+
+        final Integer count = 예약자_수_확인하기().as(Integer.class);
+        System.out.println("count :: " + count);
+        assertEquals(2, count);
     }
 
     @Test
@@ -54,9 +58,10 @@ class ReservationControllerTest extends AcceptanceTest {
         // given
         Map<String, String> params = 예약요청정보가져오기("신규예약자");
         // when
-        final ExtractableResponse<Response> response = 예약하기(params);
+        예약하기(params);
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        final Integer count = 예약자_수_확인하기().as(Integer.class);
+        assertEquals(1, count);
     }
 
     private Map<String, String> 예약요청정보가져오기(String name) {
@@ -72,6 +77,17 @@ class ReservationControllerTest extends AcceptanceTest {
                 .body(params)
                 .when()
                 .post(RESERVE_URL)
+                .then().log().all()
+                .extract();
+        return response;
+    }
+
+    private ExtractableResponse<Response> 예약자_수_확인하기() {
+        final ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get(RESERVE_COUNT_URL)
                 .then().log().all()
                 .extract();
         return response;

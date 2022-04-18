@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;

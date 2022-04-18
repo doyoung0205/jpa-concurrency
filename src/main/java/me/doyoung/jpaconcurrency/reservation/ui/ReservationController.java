@@ -7,14 +7,12 @@ import me.doyoung.jpaconcurrency.reservation.domain.ReservationCapacityException
 import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static me.doyoung.jpaconcurrency.reservation.domain.validator.ReservationCapacityValidator.RESERVATION_ERROR_MESSAGE;
 
@@ -27,8 +25,7 @@ public class ReservationController {
     private final ReservationService service;
 
     @PostMapping
-    public ResponseEntity<ReservationDtos.Response> reserve(
-            @RequestBody ReservationDtos.Request request) {
+    public ResponseEntity<ReservationDtos.Response> reserve(@RequestBody ReservationDtos.Request request) {
         log.info("{} 예약 신청 controller 시작", Thread.currentThread().getName());
         try {
             final ReservationDtos.Response reserve = service.reserve(request);
