@@ -31,7 +31,7 @@ public class Treatment {
     private int capacity;
 
     @Version
-    private Integer version;
+    private Instant version;
 
     public Treatment(String name) {
         validateName(name);
