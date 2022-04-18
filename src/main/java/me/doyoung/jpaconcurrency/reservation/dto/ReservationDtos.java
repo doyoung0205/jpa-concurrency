@@ -3,20 +3,20 @@ package me.doyoung.jpaconcurrency.reservation.dto;
 import lombok.Getter;
 import me.doyoung.jpaconcurrency.reservation.domain.Reservation;
 
-import java.io.Serializable;
-
 public class ReservationDtos {
 
     // 예약 요청 DTO
     @Getter
     public static class Request {
 
+        private Long treatmentId;
         private String name;
 
         public Request() {
         }
 
-        public Request(String name) {
+        public Request(Long treatmentId, String name) {
+            this.treatmentId = treatmentId;
             this.name = name;
         }
     }

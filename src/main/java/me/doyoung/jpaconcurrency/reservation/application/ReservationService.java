@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -31,15 +29,15 @@ public class ReservationService {
      */
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
     public ReservationDtos.Response reserve(ReservationDtos.Request request) {
-        final Reservation reservation = Reservation.from(request.getName(), validator);
+        final Reservation reservation = Reservation.from(request.getTreatmentId(), request.getName(), validator);
         final Reservation savedReservation = repository.save(reservation);
         return new ReservationDtos.Response(savedReservation);
     }
 
     @Transactional(readOnly = true)
-    public int reserveCountToday() {
+    public int getReserveCountByTreatmentIdAndToday(Long treatmentId) {
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-        return repository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
+        return repository.countByTreatmentIdAndTodayWithLock(treatmentId, startDateTime, endDateTime);
     }
 }

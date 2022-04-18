@@ -1,9 +1,10 @@
 package me.doyoung.jpaconcurrency.reservation.application;
 
 import lombok.extern.slf4j.Slf4j;
-import me.doyoung.jpaconcurrency.reservation.domain.Reservation;
 import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
 import me.doyoung.jpaconcurrency.reservation.infra.ReservationRepository;
+import me.doyoung.jpaconcurrency.treatment.domain.Treatment;
+import me.doyoung.jpaconcurrency.treatment.infra.TreatmentRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +31,16 @@ class ReservationServiceConcurrencyTest {
     @Autowired
     ReservationRepository reservationRepository;
 
+    @Autowired
+    TreatmentRepository treatmentRepository;
+
+    Long treatmentId;
+
+    @BeforeEach
+    void setUp() {
+        this.treatmentId = treatmentRepository.save(new Treatment("감기진료")).getId();
+    }
+
     @AfterEach
     public void afterEach() {
         reservationRepository.deleteAllInBatch();
@@ -49,7 +60,7 @@ class ReservationServiceConcurrencyTest {
             executorService.execute(() -> {
                 log.info("[BEFORE] reserve");
                 try {
-                    service.reserve(new ReservationDtos.Request("신규예약자" + finalIndex));
+                    service.reserve(new ReservationDtos.Request(treatmentId, "신규예약자" + finalIndex));
                 } catch (Exception e) {
                     log.info("[ERROR] {} {}", e.getClass(), e.getMessage());
                 }
@@ -68,6 +79,6 @@ class ReservationServiceConcurrencyTest {
     private int getReservationCountByToday() {
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-        return reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
+        return reservationRepository.countByTreatmentIdAndTodayWithLock(treatmentId, startDateTime, endDateTime);
     }
 }

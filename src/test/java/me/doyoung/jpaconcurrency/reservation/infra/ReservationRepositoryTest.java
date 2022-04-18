@@ -1,13 +1,14 @@
 package me.doyoung.jpaconcurrency.reservation.infra;
 
 import me.doyoung.jpaconcurrency.reservation.domain.Reservation;
+import me.doyoung.jpaconcurrency.treatment.domain.Treatment;
+import me.doyoung.jpaconcurrency.treatment.infra.TreatmentRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,56 +23,42 @@ class ReservationRepositoryTest {
     ReservationRepository reservationRepository;
 
     @Autowired
+    TreatmentRepository treatmentRepository;
+
+    @Autowired
     EntityManager em;
+    Long treatmentId;
+
+    @BeforeEach
+    void setUp() {
+        this.treatmentId = treatmentRepository.save(new Treatment("감기진료")).getId();
+    }
 
     @Test
     void save() {
         // given
-        final Reservation reservation = Reservation.getFakeInstance("fake1");
+        final Reservation reservation = Reservation.getFakeInstance(treatmentId, "fake1");
         // when
         final Reservation savedReservation = reservationRepository.save(reservation);
         // then
         assertNotNull(savedReservation.getId());
     }
 
-    @Test
-    void countByCreateDate() {
-        // given
-        final Reservation fake2 = Reservation.getFakeInstance("fake2");
-        final Reservation fake1 = Reservation.getFakeInstance("fake1");
 
-        reservationRepository.saveAndFlush(fake1);
+    @Test
+    void countByTreatmentIdAndTodayWithLock() {
+
+        // given
+        reservationRepository.saveAndFlush(Reservation.getFakeInstance(treatmentId, "fake1"));
 
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
 
         // when
-        int count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
+        final int count = reservationRepository.countByTreatmentIdAndTodayWithLock(treatmentId, startDateTime, endDateTime);
 
         // then
         assertEquals(1, count);
-
-
-        reservationRepository.saveAndFlush(fake2);
-
-        count = reservationRepository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
-
-        assertEquals(2, count);
-    }
-
-    @Test
-    void findByCreatedAtBetweenStartAndEndDateTimeWithLock() {
-        // given
-        reservationRepository.saveAndFlush(Reservation.getFakeInstance("fake1"));
-
-        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
-        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-
-        // when
-        final List<Reservation> reservations = reservationRepository.findByCreatedAtBetweenStartAndEndDateTimeWithLock(startDateTime, endDateTime);
-
-        // then
-        assertEquals(1, reservations.size());
     }
 
 

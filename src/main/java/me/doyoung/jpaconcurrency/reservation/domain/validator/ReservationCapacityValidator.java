@@ -6,15 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import me.doyoung.jpaconcurrency.reservation.domain.Reservation;
 import me.doyoung.jpaconcurrency.reservation.domain.ReservationCapacityException;
 import me.doyoung.jpaconcurrency.reservation.infra.ReservationRepository;
-import org.hibernate.annotations.OptimisticLocking;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 예약 등록시 최대 인원을 체크하는 유효성 검사
@@ -30,14 +27,12 @@ public class ReservationCapacityValidator implements ReservationValidator {
     private final ReservationRepository reservationRepository;
 
     @Override
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void validate(Reservation reservation) {
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-        final List<Reservation> reservations = reservationRepository.findByCreatedAtBetweenStartAndEndDateTimeWithLock(startDateTime, endDateTime);
+        final int count = reservationRepository.countByTreatmentIdAndTodayWithLock(reservation.getTreatmentId(), startDateTime, endDateTime);
 
-        final int count = reservations.size();
         log.info("[ReservationCapacityValidator] 예약자정보 = {}, 현재 예약자 수 = {}", reservation, count);
         if (isSameOrBiggerThenMaxCapacity(count)) {
             throw new ReservationCapacityException(RESERVATION_ERROR_MESSAGE);

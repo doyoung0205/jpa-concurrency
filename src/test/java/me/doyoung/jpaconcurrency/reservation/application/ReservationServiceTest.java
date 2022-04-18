@@ -3,6 +3,8 @@ package me.doyoung.jpaconcurrency.reservation.application;
 import me.doyoung.jpaconcurrency.reservation.domain.Reservation;
 import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
 import me.doyoung.jpaconcurrency.reservation.infra.ReservationRepository;
+import me.doyoung.jpaconcurrency.treatment.domain.Treatment;
+import me.doyoung.jpaconcurrency.treatment.infra.TreatmentRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +27,14 @@ class ReservationServiceTest {
     @Autowired
     ReservationRepository reservationRepository;
 
+    @Autowired
+    TreatmentRepository treatmentRepository;
+
+    Long treatmentId;
+
     @BeforeEach
     public void init() {
+        this.treatmentId = treatmentRepository.save(new Treatment("감기진료")).getId();
         reservationRepository.deleteAllInBatch();
     }
 
@@ -39,7 +47,7 @@ class ReservationServiceTest {
     @Test
     void reserveSuccess() {
         // given - when
-        final ReservationDtos.Response reserveResponse = service.reserve(new ReservationDtos.Request("request1"));
+        final ReservationDtos.Response reserveResponse = service.reserve(new ReservationDtos.Request(treatmentId, "request1"));
         // then
         assertNotNull(reserveResponse.getId());
     }
@@ -48,11 +56,11 @@ class ReservationServiceTest {
     @Test
     void reserveFail() {
         // given
-        final List<Reservation> reservations = Arrays.asList(Reservation.getFakeInstance("fake1"), Reservation.getFakeInstance("fake2"));
+        final List<Reservation> reservations = Arrays.asList(Reservation.getFakeInstance(treatmentId, "fake1"), Reservation.getFakeInstance(treatmentId, "fake2"));
         reservationRepository.saveAll(reservations);
 
         // when - then
-        assertThrows(Exception.class, () -> service.reserve(new ReservationDtos.Request("request1")));
+        assertThrows(Exception.class, () -> service.reserve(new ReservationDtos.Request(treatmentId, "face3")));
     }
 
 }

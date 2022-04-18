@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import me.doyoung.jpaconcurrency.reservation.domain.validator.ReservationValidator;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.StringUtils;
 
@@ -34,19 +33,19 @@ public class Reservation {
 
     private String name;
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private Long treatmentId;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime reservationDate;
 
     @Version
     private Integer version;
 
-    private Reservation(String name) {
+    private Reservation(Long treatmentId, String name) {
         validateName(name);
         this.name = name;
+        this.treatmentId = treatmentId;
     }
 
     private void validateName(String name) {
@@ -55,14 +54,14 @@ public class Reservation {
         }
     }
 
-    public static Reservation from(String name, ReservationValidator validator) {
-        final Reservation reservation = new Reservation(name);
+    public static Reservation from(Long treatmentId, String name, ReservationValidator validator) {
+        final Reservation reservation = new Reservation(treatmentId, name);
         validator.validate(reservation);
         return reservation;
     }
 
-    public static Reservation getFakeInstance(String name) {
-        return new Reservation(name);
+    public static Reservation getFakeInstance(Long treatmentId, String name) {
+        return new Reservation(treatmentId, name);
     }
 
     public Integer getVersion() {

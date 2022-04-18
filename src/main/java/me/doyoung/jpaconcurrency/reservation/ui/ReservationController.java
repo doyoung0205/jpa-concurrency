@@ -25,7 +25,8 @@ public class ReservationController {
     private final ReservationService service;
 
     @PostMapping
-    public ResponseEntity<ReservationDtos.Response> reserve(@RequestBody ReservationDtos.Request request) {
+    public ResponseEntity<ReservationDtos.Response> saveReserve(
+            @RequestBody ReservationDtos.Request request) {
         final String threadName = Thread.currentThread().getName();
         log.info("{} 예약 신청 controller 시작", threadName);
         try {
@@ -40,8 +41,8 @@ public class ReservationController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Integer> reserveCount() {
-        return ResponseEntity.ok().body(service.reserveCountToday());
+    public ResponseEntity<Integer> getReserveCount(Long treatmentId) {
+        return ResponseEntity.ok().body(service.getReserveCountByTreatmentIdAndToday(treatmentId));
     }
 
     @ExceptionHandler(value = {ReservationCapacityException.class})
