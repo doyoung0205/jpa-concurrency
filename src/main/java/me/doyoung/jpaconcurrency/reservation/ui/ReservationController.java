@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static me.doyoung.jpaconcurrency.reservation.domain.validator.ReservationCapacityValidator.RESERVATION_ERROR_MESSAGE;
 
 @Slf4j
 @RestController
@@ -27,17 +26,26 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<ReservationDtos.Response> saveReserve(
             @RequestBody ReservationDtos.Request request) {
-        final String threadName = Thread.currentThread().getName();
-        log.info("{} 예약 신청 controller 시작", threadName);
-        try {
-            final ReservationDtos.Response reserve = service.reserve(request);
-            final ResponseEntity<ReservationDtos.Response> result = ResponseEntity.ok().body(reserve);
-            log.info("{} 예약 신청 controller 정상 종료", threadName);
-            return result;
-        } catch (ConcurrencyFailureException exception) {
-            log.info("{} 예약 신청 OptimisticLockingFailure 오류 발생", threadName);
-            throw new ReservationCapacityException(RESERVATION_ERROR_MESSAGE);
+
+        int retryCount = 3;
+        log.info("{} 예약 신청 controller 시작", Thread.currentThread().getName());
+
+        for (int i = 0; i < retryCount; i++) {
+            try {
+                return getResponseResponseEntity(request);
+            } catch (ConcurrencyFailureException exception) {
+                log.info("{} 예약 신청 OptimisticLockingFailure 오류 {} 번 발생", Thread.currentThread().getName(), (i + 1));
+            }
         }
+        throw new ReservationCapacityException("예약인원이 꽉 찼습니다.");
+
+    }
+
+    private ResponseEntity<ReservationDtos.Response> getResponseResponseEntity(ReservationDtos.Request request) {
+        final ReservationDtos.Response reserve = service.reserve(request);
+        final ResponseEntity<ReservationDtos.Response> result = ResponseEntity.ok().body(reserve);
+        log.info("{} 예약 신청 controller 정상 종료", Thread.currentThread().getName());
+        return result;
     }
 
     @GetMapping("/count")

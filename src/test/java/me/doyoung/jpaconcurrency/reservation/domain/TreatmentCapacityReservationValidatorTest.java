@@ -1,6 +1,6 @@
 package me.doyoung.jpaconcurrency.reservation.domain;
 
-import me.doyoung.jpaconcurrency.reservation.domain.validator.ReservationCapacityValidator;
+import me.doyoung.jpaconcurrency.treatment.domain.validator.TreatmentCapacityReservationValidator;
 import me.doyoung.jpaconcurrency.reservation.infra.ReservationRepository;
 import me.doyoung.jpaconcurrency.treatment.domain.Treatment;
 import me.doyoung.jpaconcurrency.treatment.infra.TreatmentRepository;
@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-class ReservationCapacityValidatorTest {
+class TreatmentCapacityReservationValidatorTest {
 
     @Autowired
     ReservationRepository reservationRepository;
 
     @Autowired
-    ReservationCapacityValidator validator;
+    TreatmentCapacityReservationValidator validator;
     @Autowired
     TreatmentRepository treatmentRepository;
 
@@ -32,12 +32,12 @@ class ReservationCapacityValidatorTest {
 
     @BeforeEach
     public void init() {
-        this.treatmentId = treatmentRepository.save(new Treatment("감기진료")).getId();
+        this.treatmentId = treatmentRepository.saveAndFlush(new Treatment("감기진료")).getId();
     }
 
 
     @Test
-    @DisplayName("예약이 2명 이상 되어있는 경우 유효하지 못하다.")
+    @DisplayName("예약이 최대인원 이상 되어있는 경우 유효하지 못하다.")
     @Transactional
     void validateFail() {
         // given
@@ -46,14 +46,16 @@ class ReservationCapacityValidatorTest {
                 Reservation.getFakeInstance(treatmentId, "fake2")
         );
         reservationRepository.saveAll(reservations);
+        reservationRepository.flush();
+
         final Reservation reservation = Reservation.getFakeInstance(treatmentId, "fake3");
 
         // when - then
-        assertThrows(IllegalStateException.class, () -> validator.validate(reservation));
+        assertThrows(ReservationCapacityException.class, () -> validator.validate(reservation));
     }
 
     @Test
-    @DisplayName("2명 미만으로 예약되어있는 경우 유효하다")
+    @DisplayName("최대인원 미만으로 예약되어있는 경우 유효하다")
     @Transactional
     void validateSuccess() {
         // given

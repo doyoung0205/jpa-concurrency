@@ -15,6 +15,8 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -23,6 +25,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = {@UniqueConstraint(name = "unique_name", columnNames = "name")})
 public class Reservation {
 
     private static final String EMPTY_NAME_ERROR_MESSAGE = "예약자의 이름을 입력해주세요.";
@@ -31,8 +34,10 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private Long treatmentId;
 
     @CreatedDate

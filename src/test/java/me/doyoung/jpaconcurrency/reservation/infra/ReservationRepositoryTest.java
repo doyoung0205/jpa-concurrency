@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -46,7 +45,7 @@ class ReservationRepositoryTest {
 
 
     @Test
-    void countByTreatmentIdAndTodayWithLock() {
+    void countByTreatmentIdAndToday() {
 
         // given
         reservationRepository.saveAndFlush(Reservation.getFakeInstance(treatmentId, "fake1"));
@@ -55,7 +54,7 @@ class ReservationRepositoryTest {
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
 
         // when
-        final int count = reservationRepository.countByTreatmentIdAndTodayWithLock(treatmentId, startDateTime, endDateTime);
+        final int count = reservationRepository.countByTreatmentIdAndToday(treatmentId, startDateTime, endDateTime);
 
         // then
         assertEquals(1, count);

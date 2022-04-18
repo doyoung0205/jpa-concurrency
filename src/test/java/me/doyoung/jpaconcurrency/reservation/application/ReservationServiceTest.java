@@ -34,14 +34,11 @@ class ReservationServiceTest {
 
     @BeforeEach
     public void init() {
-        this.treatmentId = treatmentRepository.save(new Treatment("감기진료")).getId();
+        treatmentRepository.deleteAllInBatch();
         reservationRepository.deleteAllInBatch();
+        this.treatmentId = treatmentRepository.saveAndFlush(new Treatment("감기진료")).getId();
     }
 
-    @AfterEach
-    public void afterEach() {
-        reservationRepository.deleteAllInBatch();
-    }
 
     @DisplayName("예약이 성공하는 케이스")
     @Test

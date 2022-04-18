@@ -46,7 +46,7 @@ class ReservationServiceConcurrencyTest {
         reservationRepository.deleteAllInBatch();
     }
 
-    @DisplayName("여러명이 동시에 예약을 할 때 최대 인원 수 만큼만 예약이 된다.")
+    @DisplayName("여러명이 동시에 예약을 할 때 최초 한명만 예약된다.")
     @Test
     void reserveConcurrency() throws InterruptedException {
         // given
@@ -72,13 +72,13 @@ class ReservationServiceConcurrencyTest {
         latch.await(10, TimeUnit.SECONDS);
 
         // then
-        assertEquals(getReservationCountByToday(), 2);
+        assertEquals(getReservationCountByToday(), 1);
     }
 
 
     private int getReservationCountByToday() {
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-        return reservationRepository.countByTreatmentIdAndTodayWithLock(treatmentId, startDateTime, endDateTime);
+        return reservationRepository.countByTreatmentIdAndToday(treatmentId, startDateTime, endDateTime);
     }
 }

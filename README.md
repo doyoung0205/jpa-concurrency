@@ -1,15 +1,22 @@
 ### JPA 동시성 이슈를 다루는 프로젝트
 
+| 영어          | 한글  |
+|-------------|-----|
+| treatment   | 진료  |
+| Reservation | 예약  |
+
 ### 요구사항
 
-- [x] 하루에 최대 두명까지 예약을 할 수 있음 !
-- [ ] 여러개의 WAS 서버에서도 위의 요구사항을 만족할 수 있는가?
+- [x] 진료를 등록할 수 있다.
+- [x] 해당 진료에 예약을 할 수 있다.
+- [x] 하루에 진료의 최대 인원 까지 예약을 할 수 있다.
+    - [x] 동시성 이슈가 나지 않도록 예약할 수 있다.
+    - [x] 여러개의 WAS 서버에서도 위의 요구사항을 만족할 수 있는가?
 
 ### 해결할 수 있을 것 같은 방법
 
-1. jpa lock
-2. redis
-
+1. jpa lock (Optimistic)
+2. redis (분산락)
 
 ### 내용 정리
 
@@ -59,21 +66,17 @@ public class entity { ... }
 OptimisticLockType.DIRTY는 현재 실행 중인 지속성 컨텍스트에서 엔터티가 로드된 이후 변경된 엔터티 속성만 고려한다는 점에서 OptimisticLockType.ALL과 다릅니다.
 ```
 
-
 ##### 낙관적 락에서 발생하는 예외
+
 - `javax.persistence.OptimisticLockException` (jpa 예외)
 - `org.hibernate.StaleObjectStateException` (하이버네이트 예외)
 - `org.springframework.orm.ObjectOptimisticLockingFailureException` (스프링 예외 추상화)
 
-
 ##### OPTIMISTIC
-
-
 
 ```
 em.find(Board.class, id, LockModeType.OPTIMISTIC); 
 ```
-
 
 #### Pessimistic (비관적)
 
