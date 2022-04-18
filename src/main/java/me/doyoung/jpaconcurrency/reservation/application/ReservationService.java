@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -30,5 +33,11 @@ public class ReservationService {
         final Reservation reservation = Reservation.from(request.getName(), validator);
         final Reservation savedReservation = repository.save(reservation);
         return new ReservationDtos.Response(savedReservation);
+    }
+
+    public int reserveCountToday() {
+        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
+        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
+        return repository.countByCreatedAtBetweenStartAndEndDateTime(startDateTime, endDateTime);
     }
 }

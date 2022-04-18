@@ -9,6 +9,7 @@ import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,11 @@ public class ReservationController {
             log.info("{} 예약 신청 OptimisticLockingFailure 오류 발생", Thread.currentThread().getName());
             throw new ReservationCapacityException(RESERVATION_ERROR_MESSAGE);
         }
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Integer> reserveCount() {
+        return ResponseEntity.ok().body(service.reserveCountToday());
     }
 
     @ExceptionHandler(value = {ReservationCapacityException.class})
