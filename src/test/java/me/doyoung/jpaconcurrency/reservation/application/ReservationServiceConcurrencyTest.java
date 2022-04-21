@@ -60,7 +60,7 @@ class ReservationServiceConcurrencyTest {
             executorService.execute(() -> {
                 log.info("[BEFORE] reserve");
                 try {
-                    service.reserve(new ReservationDtos.Request(treatmentId, "신규예약자" + finalIndex));
+                    service.saveReservation(new ReservationDtos.Request(treatmentId, "신규예약자" + finalIndex));
                 } catch (Exception e) {
                     log.info("[ERROR] {} {}", e.getClass(), e.getMessage());
                 }

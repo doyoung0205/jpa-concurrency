@@ -12,8 +12,7 @@ public class ReservationDtos {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Request {
-
+    public static class Request implements ConcurrentAbleRequest {
         private Long treatmentId;
         private String name;
     }

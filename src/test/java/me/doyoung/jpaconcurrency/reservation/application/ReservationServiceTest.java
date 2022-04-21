@@ -5,7 +5,6 @@ import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
 import me.doyoung.jpaconcurrency.reservation.infra.ReservationRepository;
 import me.doyoung.jpaconcurrency.treatment.domain.Treatment;
 import me.doyoung.jpaconcurrency.treatment.infra.TreatmentRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,7 @@ class ReservationServiceTest {
     @Test
     void reserveSuccess() {
         // given - when
-        final ReservationDtos.Response reserveResponse = service.reserve(new ReservationDtos.Request(treatmentId, "request1"));
+        final ReservationDtos.Response reserveResponse = service.saveReservation(new ReservationDtos.Request(treatmentId, "request1"));
         // then
         assertNotNull(reserveResponse.getId());
     }
@@ -57,7 +56,7 @@ class ReservationServiceTest {
         reservationRepository.saveAll(reservations);
 
         // when - then
-        assertThrows(Exception.class, () -> service.reserve(new ReservationDtos.Request(treatmentId, "face3")));
+        assertThrows(Exception.class, () -> service.saveReservation(new ReservationDtos.Request(treatmentId, "face3")));
     }
 
 }

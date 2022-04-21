@@ -40,7 +40,7 @@ class ReservationControllerTest extends AcceptanceTest {
     @Test
     @DisplayName("여러명이 동시에 예약한다.")
     void multiReserve() throws InterruptedException {
-        final int N_THREAD_COUNT = 100;
+        final int N_THREAD_COUNT = 20;
         final ExecutorService executorService = Executors.newFixedThreadPool(N_THREAD_COUNT);
 
         // when

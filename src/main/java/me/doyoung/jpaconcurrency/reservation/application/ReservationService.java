@@ -24,11 +24,11 @@ public class ReservationService {
     /**
      * 예약 등록 기능
      *
-     * @throws ConcurrencyFailureException
-     * @apiNote 하루에 최대 2명까지만 예약이 가능!
+     * @throws ConcurrencyFailureException 동시에 예약할 경우 가장 최초인 경우가 아니라면 나타나는 예외
+     * @apiNote 동시에 한번에 예약할 경우 가장 최초의 한명만 예약한다.
      */
-    @Transactional(propagation = Propagation.REQUIRED)
-    public ReservationDtos.Response reserve(ReservationDtos.Request request) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ReservationDtos.Response saveReservation(ReservationDtos.Request request) {
         final Reservation reservation = Reservation.from(request.getTreatmentId(), request.getName(), validator);
         final Reservation savedReservation = repository.save(reservation);
         return new ReservationDtos.Response(savedReservation);
