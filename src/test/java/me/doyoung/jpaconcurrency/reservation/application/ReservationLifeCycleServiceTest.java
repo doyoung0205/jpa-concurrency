@@ -18,10 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ReservationServiceTest {
+class ReservationLifeCycleServiceTest {
 
     @Autowired
-    ReservationService service;
+    ReservationLifeCycleService service;
 
     @Autowired
     ReservationRepository reservationRepository;

@@ -2,7 +2,7 @@ package me.doyoung.jpaconcurrency.reservation.ui;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.doyoung.jpaconcurrency.reservation.application.ReservationService;
+import me.doyoung.jpaconcurrency.reservation.application.ReservationInfoService;
 import me.doyoung.jpaconcurrency.reservation.application.ReservationSyncService;
 import me.doyoung.jpaconcurrency.reservation.domain.ReservationCapacityException;
 import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/reserve")
 public class ReservationController {
 
-    private final ReservationService service;
+    private final ReservationInfoService infoService;
     private final ReservationSyncService syncService;
 
     @PostMapping
@@ -33,7 +33,7 @@ public class ReservationController {
 
     @GetMapping("/count")
     public ResponseEntity<Integer> getReserveCount(Long treatmentId) {
-        return ResponseEntity.ok().body(service.getReserveCountByTreatmentIdAndToday(treatmentId));
+        return ResponseEntity.ok().body(infoService.getTodayReserveCountByTreatmentId(treatmentId));
     }
 
     @ExceptionHandler(value = {ReservationCapacityException.class})

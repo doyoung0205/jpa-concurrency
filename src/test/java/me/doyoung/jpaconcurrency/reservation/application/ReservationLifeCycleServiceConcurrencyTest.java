@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ReservationServiceConcurrencyTest {
+class ReservationLifeCycleServiceConcurrencyTest {
 
     @Autowired
-    ReservationService service;
+    ReservationLifeCycleService service;
 
     @Autowired
     ReservationRepository reservationRepository;

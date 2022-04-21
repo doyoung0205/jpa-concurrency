@@ -11,13 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ReservationService {
+public class ReservationLifeCycleService {
     private final ReservationRepository repository;
     private final ReservationValidator validator;
 
@@ -32,12 +29,5 @@ public class ReservationService {
         final Reservation reservation = Reservation.from(request.getTreatmentId(), request.getName(), validator);
         final Reservation savedReservation = repository.save(reservation);
         return new ReservationDtos.Response(savedReservation);
-    }
-
-    @Transactional(readOnly = true)
-    public int getReserveCountByTreatmentIdAndToday(Long treatmentId) {
-        final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
-        final LocalDateTime endDateTime = startDateTime.plusDays(1L);
-        return repository.countByTreatmentIdAndToday(treatmentId, startDateTime, endDateTime);
     }
 }
