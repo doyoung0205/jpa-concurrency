@@ -19,10 +19,10 @@ public class ReservationLifeCycleService {
     private final ReservationValidator validator;
 
     /**
-     * 예약 등록 기능
+     * 예약 정보 저장
      *
-     * @throws ConcurrencyFailureException 동시에 예약할 경우 가장 최초인 경우가 아니라면 나타나는 예외
-     * @apiNote 동시에 한번에 예약할 경우 가장 최초의 한명만 예약한다.
+     * @throws ConcurrencyFailureException 동시에 예약할 경우 가장 최초가 아니라면 발생한다.
+     * @apiNote 동시에 한번에 예약할 경우 가장 최초의 한명만 등록된다.
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ReservationDtos.Response saveReservation(ReservationDtos.Request request) {
