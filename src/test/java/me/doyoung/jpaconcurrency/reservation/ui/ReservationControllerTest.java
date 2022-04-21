@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,23 +40,27 @@ class ReservationControllerTest extends AcceptanceTest {
     @Test
     @DisplayName("여러명이 동시에 예약한다.")
     void multiReserve() throws InterruptedException {
-        final int N_THREAD_COUNT = 50;
+        final int N_THREAD_COUNT = 100;
         final ExecutorService executorService = Executors.newFixedThreadPool(N_THREAD_COUNT);
 
         // when
+        final CyclicBarrier cyclicBarrier = new CyclicBarrier(N_THREAD_COUNT);
         CountDownLatch latch = new CountDownLatch(N_THREAD_COUNT);
         for (int index = 0; index < N_THREAD_COUNT; index++) {
             final int finalIndex = index;
-            executorService.execute(() -> {
+
+            executorService.submit(() -> {
+                cyclicBarrier.await();
                 예약하기(예약요청정보가져오기(오전진료_아이디, finalIndex + "번 신규예약자"));
                 latch.countDown();
+                return null;
             });
-
         }
+
         latch.await(10, TimeUnit.SECONDS);
 
         final Integer count = 예약자_수_확인하기(오전진료_아이디).as(Integer.class);
-        assertEquals(2, count);
+        assertEquals(10, count);
     }
 
     @Test

@@ -69,10 +69,6 @@ public class Reservation {
         return new Reservation(treatmentId, name);
     }
 
-    public Integer getVersion() {
-        return version;
-    }
-
     @Override
     public String toString() {
         return "Reservation[" + name + ']';

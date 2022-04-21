@@ -19,7 +19,7 @@ import java.time.Instant;
 public class Treatment {
 
     private static final String EMPTY_NAME_ERROR_MESSAGE = "진료명 입력해주세요.";
-    public static final int DEFAULT_CAPACITY = 2;
+    public static final int DEFAULT_CAPACITY = 10;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

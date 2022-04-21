@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.doyoung.jpaconcurrency.reservation.application.ReservationService;
 import me.doyoung.jpaconcurrency.reservation.domain.ReservationCapacityException;
 import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
+import me.doyoung.jpaconcurrency.treatment.domain.Treatment;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,7 +28,7 @@ public class ReservationController {
     public ResponseEntity<ReservationDtos.Response> saveReserve(
             @RequestBody ReservationDtos.Request request) {
 
-        int retryCount = 3;
+        int retryCount = Treatment.DEFAULT_CAPACITY - 1;
         log.info("{} 예약 신청 controller 시작", Thread.currentThread().getName());
 
         for (int i = 0; i < retryCount; i++) {
@@ -37,6 +38,7 @@ public class ReservationController {
                 log.info("{} 예약 신청 OptimisticLockingFailure 오류 {} 번 발생", Thread.currentThread().getName(), (i + 1));
             }
         }
+
         throw new ReservationCapacityException("예약인원이 꽉 찼습니다.");
 
     }

@@ -34,6 +34,8 @@ public class TreatmentCapacityReservationValidator implements ReservationValidat
     public void validate(Reservation reservation) {
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);
+        // 진료 : Treatment
+        // 진료 에 해당되는 예약 : reservation
         final Treatment treatment = treatmentRepository.getByIdWithOptimisticForceIncrement(reservation.getTreatmentId());
         final int count = reservationRepository.countByTreatmentIdAndToday(reservation.getTreatmentId(), startDateTime, endDateTime);
         final int capacity = treatment.getCapacity();

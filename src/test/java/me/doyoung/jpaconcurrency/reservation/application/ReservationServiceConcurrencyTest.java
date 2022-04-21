@@ -75,7 +75,6 @@ class ReservationServiceConcurrencyTest {
         assertEquals(getReservationCountByToday(), 1);
     }
 
-
     private int getReservationCountByToday() {
         final LocalDateTime startDateTime = LocalDate.now().atTime(0, 0);
         final LocalDateTime endDateTime = startDateTime.plusDays(1L);

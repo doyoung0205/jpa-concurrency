@@ -17,7 +17,8 @@ public interface TreatmentRepository extends JpaRepository<Treatment, Long> {
     Treatment getByIdWithOptimisticForceIncrement(@Param("id") Long id);
 
     @Query("SELECT t FROM Treatment t WHERE t.id = :id")
-    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "5000")})
     Treatment getByIdWithPessimistic(@Param("id") Long id);
+    
 }
