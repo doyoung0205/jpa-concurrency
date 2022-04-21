@@ -38,6 +38,7 @@ class ReservationLifeCycleServiceConcurrencyTest {
 
     @BeforeEach
     void setUp() {
+        treatmentRepository.deleteAllInBatch();
         this.treatmentId = treatmentRepository.save(new Treatment("감기진료")).getId();
     }
 

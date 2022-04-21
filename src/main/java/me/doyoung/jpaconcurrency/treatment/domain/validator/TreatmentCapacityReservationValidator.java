@@ -10,7 +10,6 @@ import me.doyoung.jpaconcurrency.reservation.infra.ReservationRepository;
 import me.doyoung.jpaconcurrency.treatment.domain.Treatment;
 import me.doyoung.jpaconcurrency.treatment.infra.TreatmentRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;

@@ -11,8 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -52,7 +53,11 @@ class ReservationLifeCycleServiceTest {
     @Test
     void reserveFail() {
         // given
-        final List<Reservation> reservations = Arrays.asList(Reservation.getFakeInstance(treatmentId, "fake1"), Reservation.getFakeInstance(treatmentId, "fake2"));
+        final List<Reservation> reservations = IntStream.range(0, Treatment.DEFAULT_CAPACITY)
+                .mapToObj(operand -> {
+                    return Reservation.getFakeInstance(treatmentId, "fake" + operand);
+                })
+                .collect(Collectors.toList());
         reservationRepository.saveAll(reservations);
 
         // when - then

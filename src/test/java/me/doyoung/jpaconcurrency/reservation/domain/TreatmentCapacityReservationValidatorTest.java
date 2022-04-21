@@ -1,8 +1,8 @@
 package me.doyoung.jpaconcurrency.reservation.domain;
 
-import me.doyoung.jpaconcurrency.treatment.domain.validator.TreatmentCapacityReservationValidator;
 import me.doyoung.jpaconcurrency.reservation.infra.ReservationRepository;
 import me.doyoung.jpaconcurrency.treatment.domain.Treatment;
+import me.doyoung.jpaconcurrency.treatment.domain.validator.TreatmentCapacityReservationValidator;
 import me.doyoung.jpaconcurrency.treatment.infra.TreatmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,10 +42,12 @@ class TreatmentCapacityReservationValidatorTest {
     @Transactional
     void validateFail() {
         // given
-        final List<Reservation> reservations = Arrays.asList(
-                Reservation.getFakeInstance(treatmentId, "fake1"),
-                Reservation.getFakeInstance(treatmentId, "fake2")
-        );
+        final List<Reservation> reservations = IntStream.range(0, Treatment.DEFAULT_CAPACITY)
+                .mapToObj(operand -> {
+                    return Reservation.getFakeInstance(treatmentId, "fake" + operand);
+                })
+                .collect(Collectors.toList());
+
         reservationRepository.saveAll(reservations);
         reservationRepository.flush();
 
