@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
 import me.doyoung.jpaconcurrency.treatment.domain.Treatment;
-import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 @Slf4j

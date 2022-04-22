@@ -8,9 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Table;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
