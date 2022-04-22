@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import me.doyoung.jpaconcurrency.reservation.dto.ReservationDtos;
 import me.doyoung.jpaconcurrency.treatment.domain.Treatment;
 import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -18,11 +20,10 @@ public class ReservationSyncService {
         for (int index = 0; index < retryCount; index++) {
             try {
                 return reservationLifeCycleService.saveReservation(request);
-            } catch (ConcurrencyFailureException exception) {
+            } catch (OptimisticLockingFailureException exception) {
                 log.info("[reserveWithSync] {} : ConcurrencyFailureException 오류 {} 번 발생", Thread.currentThread().getName(), (index + 1));
             }
         }
         throw new IllegalThreadStateException("동시성을 처리할 수 없는 상태입니다.");
     }
-
 }
