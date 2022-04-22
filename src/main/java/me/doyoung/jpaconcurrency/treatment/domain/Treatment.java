@@ -1,6 +1,7 @@
 package me.doyoung.jpaconcurrency.treatment.domain;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
@@ -16,6 +17,7 @@ import java.time.Instant;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = "id")
 public class Treatment {
 
     private static final String EMPTY_NAME_ERROR_MESSAGE = "진료명 입력해주세요.";
@@ -43,20 +45,5 @@ public class Treatment {
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException(EMPTY_NAME_ERROR_MESSAGE);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Treatment)) return false;
-
-        Treatment treatment = (Treatment) o;
-
-        return getId().equals(treatment.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getId().hashCode();
     }
 }
