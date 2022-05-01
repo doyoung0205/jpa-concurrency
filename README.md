@@ -1,4 +1,6 @@
-### JPA 동시성 이슈를 다루는 프로젝트
+### OptimisticLocking 을 이용한 최대인원 예약 동시성 처리하기
+
+출처: https://doyoung.tistory.com/34 [귀찮다고 망설이지 말자.]
 
 [블로그 링크](https://doyoung.tistory.com/34)
 
