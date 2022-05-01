@@ -1,6 +1,6 @@
 ### JPA 동시성 이슈를 다루는 프로젝트
 
-- [블로그 링크](https://doyoung.tistory.com/34)
+[블로그 링크](https://doyoung.tistory.com/34)
 
 | 영어          | 한글  |
 |-------------|-----|
